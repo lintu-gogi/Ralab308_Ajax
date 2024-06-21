@@ -23,7 +23,6 @@ axios.defaults.headers.common['Authorization'] = API_KEY;
  * This function should execute immediately.
  */
 document.addEventListener("DOMContentLoaded", initialLoad);
-//breedSelect.addEventListener("click",initialLoad)
 async function initialLoad(){
   
     const option=document.createElement("option");
@@ -31,12 +30,12 @@ async function initialLoad(){
       option.textContent="Select a breed"
       breedSelect.appendChild(option);
     
-      const response = await axios.get("https://api.thecatapi.com/v1/breeds"//, 
-       /* { 
+      const response = await axios.get("https://api.thecatapi.com/v1/breeds", 
+        { 
         headers: { 
             'x-api-key' : API_KEY
         }
-        }*/
+        }
     );
     
     
@@ -45,18 +44,12 @@ async function initialLoad(){
     console.log(jsonData.data);
     let arrData=jsonData.data;
     arrData.forEach(element => { //element contains an object
-        Object.entries(element).forEach(([key, value]) => {
+        console.log("id="+element.id+"name=" +element.name);
+        console.log(element.name+" "+element.id);
             const option=document.createElement("option");
-            if(key=='id'){
-                option.value=value; 
-                console.log(value);
-            }
-            if(key=='name'){
-                option.textContent=value;
-                console.log(value);
-            }
+            option.value=element.id;
+            option.textContent=element.name;
             breedSelect.appendChild(option);
-          });
         
     });
     
@@ -79,65 +72,6 @@ async function initialLoad(){
  * - Each new selection should clear, re-populate, and restart the Carousel.
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
-breedSelect.addEventListener("change",selectFunction);
-async function selectFunction(){
-  console.log("One value Selected by Axios");
-   // Get the selected option
-   const selectedOption = breedSelect.options[breedSelect.selectedIndex];
-    
-   // Get the text of the selected option
-   const selectedName = selectedOption.text;
-   // Get the Id of the selected option
-   const selectedBreedId=selectedOption.value;
-   console.log("Name= "+selectedName+" Id= "+selectedBreedId);
-   /*const response = await fetch(`https://api.thecatapi.com/v1/images/search?limit=15&breed_ids=${selectedBreedId}`,{
-    method:'GET',
-    headers: {
-       'x-api-key' : API_KEY } 
-  
-    });*/
-    
-  const jsonData = await axios.get(`https://api.thecatapi.com/v1/images/search?limit=15&breed_ids=${selectedBreedId}`);
-  console.log("Axios Data");
-  console.log(jsonData);
-  let arrOfSelectedData=jsonData.data;
-  let infoData=selectedName;
-  console.log(infoData);
-  Carousel.clear();
-  let url;
-  let id;
-  let imgAlt=selectedName;
-  arrOfSelectedData.forEach(element => { //element contains an object
-    Object.entries(element).forEach(([key, value]) => {
-       
-        if(key=='id'){
-            id=value;
-            console.log("id= "+value);
-        }
-        if(key=='name'){
-            url=value;
-            console.log("name= "+value);
-        }
-       
-      });
-      const carouselItem= Carousel.createCarouselItem(url,imgAlt,id);
-      Carousel.appendCarousel(carouselItem);
-    
-});
-  
-  infoDump.innerHTML=`<p>Scroll to see ${jsonData.length} images of ${infoData} Cat Breed </p>`;
-  //console.log(jsonData[0]);
-  //clear();
-  
-}
-//getFavouritesBtn.addEventListener("click",createCarousel);
-
-/*function displayCarousal(){
-  const temp=document.createElement("template");
-  console.log(temp);
-  
-}*/
-
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
  */
@@ -150,12 +84,88 @@ async function selectFunction(){
  *   by setting a default header with your API key so that you do not have to
  *   send it manually with all of your requests! You can also set a default base URL!
  */
+breedSelect.addEventListener("change",selectFunction);
+async function selectFunction(){
+  console.log("One value Selected by Axios");
+   // Get the selected option
+   const selectedOption = breedSelect.options[breedSelect.selectedIndex];
+    
+   // Get the text of the selected option
+   const selectedName = selectedOption.text;
+   // Get the Id of the selected option
+   const selectedBreedId=selectedOption.value;
+   console.log("Name= "+selectedName+" Id= "+selectedBreedId);
+   
+    
+  const jsonData = await axios.get(`https://api.thecatapi.com/v1/images/search?limit=15&breed_ids=${selectedBreedId}`,
+    {
+        headers: { 
+            'x-api-key' : API_KEY
+        }
+    }
+  );
+  console.log("Axios Data");
+  console.log(jsonData);
+  let arrOfSelectedData=await jsonData.data;
+  let infoData=selectedName;
+  console.log(infoData);
+  Carousel.clear();
+//   let url2;
+//   let id2;
+  let imgAlt=selectedName;
+  arrOfSelectedData.forEach(element => { //element contains an object
+
+    let ele=element;
+    let url=ele.url;
+    let id=ele.id;
+    console.log(url);
+    
+    
+    const carouselItem= Carousel.createCarouselItem(url,imgAlt,id);
+    Carousel.appendCarousel(carouselItem);
+    
+});
+  
+  infoDump.innerHTML=`<p>Scroll to see ${jsonData.data.length} images of ${infoData} Cat Breed </p>`;
+  //console.log(jsonData[0]);
+  //clear();
+  
+}
+
+
+
 /**
  * 5. Add axios interceptors to log the time between request and response to the console.
  * - Hint: you already have access to code that does this!
  * - Add a console.log statement to indicate when requests begin.
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
+axios.interceptors.request.use(request => {
+    request.metadata = request.metadata || {};
+    request.metadata.startTime = new Date().getTime();
+    console.log("Request start time: "+request.metadata.startTime);
+    return request;
+});
+
+axios.interceptors.response.use(
+    (response) => {
+        response.config.metadata.endTime = new Date().getTime();
+        console.log("Request end time: "+request.config.metadata.endTime);
+        response.durationInMS = response.config.metadata.endTime - response.config.metadata.startTime;
+        return response;
+    },
+    (error) => {
+        error.config.metadata.endTime = new Date().getTime();
+        error.durationInMS = error.config.metadata.endTime - error.config.metadata.startTime;
+        throw error;
+});
+(async () => {
+    const url = 'https://api.thecatapi.com/v1/breeds';
+
+    const { data, durationInMS } = await axios(url);
+    console.log(`Request took ${durationInMS} milliseconds.`);
+    console.log(data);
+})();
 
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.

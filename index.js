@@ -1,3 +1,4 @@
+
 import * as Carousel from './Carousel.js';
 import axios from 'axios';
 
@@ -46,12 +47,9 @@ async function initialLoad(){
       option.textContent=element.name;
       breedSelect.appendChild(option);
       
-      //breedSelect.insertAdjacentElement('beforeend',element.name);
       
     });
 
-    //console.log(jsonData);
-    //const url = jsonData.message;
   }
 }
 
@@ -103,22 +101,14 @@ async function selectFunction(){
    
    const carouselItem= Carousel.createCarouselItem(url,imgAlt,id);
    Carousel.appendCarousel(carouselItem);
-   //const carousel = document.querySelector("#carouselInner");
-   //appendCarousel(carousel);
    
   });
   infoDump.innerHTML=`<p>Scroll to see ${jsonData.length} images of ${infoData} Cat Breed </p>`;
-  //console.log(jsonData[0]);
-  //clear();
+  
   
 }
 //getFavouritesBtn.addEventListener("click",createCarousel);
 
-/*function displayCarousal(){
-  const temp=document.createElement("template");
-  console.log(temp);
-  
-}*/
 
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."

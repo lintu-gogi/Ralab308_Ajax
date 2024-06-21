@@ -12255,12 +12255,7 @@ function _initialLoad() {
             option.value = element.id;
             option.textContent = element.name;
             breedSelect.appendChild(option);
-
-            //breedSelect.insertAdjacentElement('beforeend',element.name);
           });
-
-          //console.log(jsonData);
-          //const url = jsonData.message;
         case 10:
         case "end":
           return _context.stop();
@@ -12273,11 +12268,6 @@ breedSelect.addEventListener("change", selectFunction);
 function selectFunction() {
   return _selectFunction.apply(this, arguments);
 } //getFavouritesBtn.addEventListener("click",createCarousel);
-/*function displayCarousal(){
-  const temp=document.createElement("template");
-  console.log(temp);
-  
-}*/
 /**
  * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
  */
@@ -12365,12 +12355,8 @@ function _selectFunction() {
             console.log(url);
             var carouselItem = Carousel.createCarouselItem(url, imgAlt, id);
             Carousel.appendCarousel(carouselItem);
-            //const carousel = document.querySelector("#carouselInner");
-            //appendCarousel(carousel);
           });
           infoDump.innerHTML = "<p>Scroll to see ".concat(jsonData.length, " images of ").concat(infoData, " Cat Breed </p>");
-          //console.log(jsonData[0]);
-          //clear();
         case 18:
         case "end":
           return _context2.stop();
@@ -12504,7 +12490,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65371" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57740" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
