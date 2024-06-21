@@ -41,28 +41,26 @@ async function initialLoad(){
     
     
     const jsonData = response;
-    console.log("Logging Json data by Axios");
-    console.log(jsonData);
-    Object.entries(jsonData).forEach(([key, value]) => {
-        if(key=='data'){
-            
-        }
+    console.log("Logging Json data by Axios which is an array with a set of Objects");
+    console.log(jsonData.data);
+    let arrData=jsonData.data;
+    arrData.forEach(element => { //element contains an object
+        Object.entries(element).forEach(([key, value]) => {
+            const option=document.createElement("option");
+            if(key=='id'){
+                option.value=value; 
+                console.log(value);
+            }
+            if(key=='name'){
+                option.textContent=value;
+                console.log(value);
+            }
+            breedSelect.appendChild(option);
+          });
         
-       
-      });
-    /*jsonData.forEach(element => {
-      console.log(element.name+" "+element.id);
-      const option=document.createElement("option");
-      option.value=element.id;
-      option.textContent=element.name;
-      breedSelect.appendChild(option);
-      
-      //breedSelect.insertAdjacentElement('beforeend',element.name);
-      
-    });*/
-
-    //console.log(jsonData);
-    //const url = jsonData.message;
+    });
+    
+    
   }
 
 
@@ -83,7 +81,7 @@ async function initialLoad(){
  */
 breedSelect.addEventListener("change",selectFunction);
 async function selectFunction(){
-  console.log("One value Selected");
+  console.log("One value Selected by Axios");
    // Get the selected option
    const selectedOption = breedSelect.options[breedSelect.selectedIndex];
     
@@ -99,29 +97,34 @@ async function selectFunction(){
   
     });*/
     
-  const jsonData = await axios.get(`https://api.thecatapi.com/v1/images/search?limit=15&breed_ids=${selectedBreedId}`//,
-    /* { 
-        headers: { 
-            'x-api-key' : API_KEY
-        }
-      }*/
-    );
+  const jsonData = await axios.get(`https://api.thecatapi.com/v1/images/search?limit=15&breed_ids=${selectedBreedId}`);
   console.log("Axios Data");
   console.log(jsonData);
+  let arrOfSelectedData=jsonData.data;
   let infoData=selectedName;
   console.log(infoData);
   Carousel.clear();
-  /*jsonData.forEach(element=>{
-   let ele=element;
-   let url=ele.url;
-   let id=ele.id;
-   let imgAlt="ImageAlt";
-   console.log(url);
-   
-   const carouselItem= Carousel.createCarouselItem(url,imgAlt,id);
-   Carousel.appendCarousel(carouselItem);
-   
-  });*/
+  let url;
+  let id;
+  let imgAlt=selectedName;
+  arrOfSelectedData.forEach(element => { //element contains an object
+    Object.entries(element).forEach(([key, value]) => {
+       
+        if(key=='id'){
+            id=value;
+            console.log("id= "+value);
+        }
+        if(key=='name'){
+            url=value;
+            console.log("name= "+value);
+        }
+       
+      });
+      const carouselItem= Carousel.createCarouselItem(url,imgAlt,id);
+      Carousel.appendCarousel(carouselItem);
+    
+});
+  
   infoDump.innerHTML=`<p>Scroll to see ${jsonData.length} images of ${infoData} Cat Breed </p>`;
   //console.log(jsonData[0]);
   //clear();

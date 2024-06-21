@@ -12543,7 +12543,7 @@ function initialLoad() {
  */
 function _initialLoad() {
   _initialLoad = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-    var option, response, jsonData;
+    var option, response, jsonData, arrData;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -12560,28 +12560,28 @@ function _initialLoad() {
         case 5:
           response = _context.sent;
           jsonData = response;
-          console.log("Logging Json data by Axios");
-          console.log(jsonData);
-          Object.entries(jsonData).forEach(function (_ref) {
-            var _ref2 = _slicedToArray(_ref, 2),
-              key = _ref2[0],
-              value = _ref2[1];
-            if (key == 'data') {}
+          console.log("Logging Json data by Axios which is an array with a set of Objects");
+          console.log(jsonData.data);
+          arrData = jsonData.data;
+          arrData.forEach(function (element) {
+            //element contains an object
+            Object.entries(element).forEach(function (_ref) {
+              var _ref2 = _slicedToArray(_ref, 2),
+                key = _ref2[0],
+                value = _ref2[1];
+              var option = document.createElement("option");
+              if (key == 'id') {
+                option.value = value;
+                console.log(value);
+              }
+              if (key == 'name') {
+                option.textContent = value;
+                console.log(value);
+              }
+              breedSelect.appendChild(option);
+            });
           });
-          /*jsonData.forEach(element => {
-            console.log(element.name+" "+element.id);
-            const option=document.createElement("option");
-            option.value=element.id;
-            option.textContent=element.name;
-            breedSelect.appendChild(option);
-            
-            //breedSelect.insertAdjacentElement('beforeend',element.name);
-            
-          });*/
-
-          //console.log(jsonData);
-          //const url = jsonData.message;
-        case 10:
+        case 11:
         case "end":
           return _context.stop();
       }
@@ -12649,11 +12649,11 @@ function selectFunction() {
  */
 function _selectFunction() {
   _selectFunction = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var selectedOption, selectedName, selectedBreedId, jsonData, infoData;
+    var selectedOption, selectedName, selectedBreedId, jsonData, arrOfSelectedData, infoData, url, id, imgAlt;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          console.log("One value Selected");
+          console.log("One value Selected by Axios");
           // Get the selected option
           selectedOption = breedSelect.options[breedSelect.selectedIndex]; // Get the text of the selected option
           selectedName = selectedOption.text; // Get the Id of the selected option
@@ -12666,35 +12666,38 @@ function _selectFunction() {
           
            });*/
           _context2.next = 7;
-          return _axios.default.get("https://api.thecatapi.com/v1/images/search?limit=15&breed_ids=".concat(selectedBreedId) //,
-          /* { 
-              headers: { 
-                  'x-api-key' : API_KEY
-              }
-            }*/
-          );
+          return _axios.default.get("https://api.thecatapi.com/v1/images/search?limit=15&breed_ids=".concat(selectedBreedId));
         case 7:
           jsonData = _context2.sent;
           console.log("Axios Data");
           console.log(jsonData);
+          arrOfSelectedData = jsonData.data;
           infoData = selectedName;
           console.log(infoData);
           Carousel.clear();
-          /*jsonData.forEach(element=>{
-           let ele=element;
-           let url=ele.url;
-           let id=ele.id;
-           let imgAlt="ImageAlt";
-           console.log(url);
-           
-           const carouselItem= Carousel.createCarouselItem(url,imgAlt,id);
-           Carousel.appendCarousel(carouselItem);
-           
-          });*/
+          imgAlt = selectedName;
+          arrOfSelectedData.forEach(function (element) {
+            //element contains an object
+            Object.entries(element).forEach(function (_ref3) {
+              var _ref4 = _slicedToArray(_ref3, 2),
+                key = _ref4[0],
+                value = _ref4[1];
+              if (key == 'id') {
+                id = value;
+                console.log("id= " + value);
+              }
+              if (key == 'name') {
+                url = value;
+                console.log("name= " + value);
+              }
+            });
+            var carouselItem = Carousel.createCarouselItem(url, imgAlt, id);
+            Carousel.appendCarousel(carouselItem);
+          });
           infoDump.innerHTML = "<p>Scroll to see ".concat(jsonData.length, " images of ").concat(infoData, " Cat Breed </p>");
           //console.log(jsonData[0]);
           //clear();
-        case 14:
+        case 17:
         case "end":
           return _context2.stop();
       }
